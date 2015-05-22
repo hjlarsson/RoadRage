@@ -18,7 +18,7 @@ Preload.prototype.preload = function () {
 };
 
 Preload.prototype.create = function () {
-    this.game.state.start("Game");
+    this.game.state.start("MainMenu");
 };
 
 module.exports = Preload;

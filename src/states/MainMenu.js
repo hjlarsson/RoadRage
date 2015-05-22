@@ -1,59 +1,111 @@
-//var Background = require("../Background");
+var ARROW_TWEEN_DELAY = 100;
 
 var MainMenu = function (game) {
     this.game = game;
+    this.creature = null;
+
+    this.menuIndex = 0;
+    this.menuSettings = [
+        {
+            text: "play",
+            offset: -70,
+            state: "Game"
+        },
+        {
+            text: "highscore",
+            offset: 0,
+            state: "Game"
+        },
+        {
+            text: "credits",
+            offset: 70,
+            state: "Game"
+        }
+    ];
+    this.menuOptions = [];
+
+    this.menuMoveTimer = 0;
+
 };
 
 MainMenu.prototype.preload = function () {
 
 };
 
+MainMenu.prototype.createMenuOptions = function () {
+    var self = this;
+
+    this.menuSettings.forEach(function (element, index, array) {
+        var option = self.game.add.bitmapText(self.game.world.centerX - 100, self.game.world.centerY + element.offset, 'dinofont', element.text, 40);
+        option.invocationState = element.state;
+        option.anchor.setTo(0, 0.5);
+        self.menuOptions.push(option);
+    });
+};
+
+MainMenu.prototype.getCurrentMenuOption = function () {
+    return this.menuOptions[this.menuIndex % this.menuOptions.length];
+};
+
+MainMenu.prototype.moveArrow = function (value) {
+
+    this.menuIndex += value;
+
+    // Lazy fulhack 22.36..
+    if (this.menuIndex < 0) {
+        this.menuIndex = 0;
+    }
+
+    var menuOption = this.getCurrentMenuOption();
+
+    this.arrow.y = menuOption.y;
+};
+
 MainMenu.prototype.create = function () {
-    this.game.world.add(new Background(this.game));
 
-    //gameOver = this.game.add.bitmapText(this.game.world.centerX, this.game.world.centerY, 'spacefont', 'GAME OVER!', 110);
-    //gameOver.x = gameOver.x - gameOver.textWidth / 2;
-    //gameOver.y = gameOver.y - gameOver.textHeight / 3;
+    this.cursors = this.game.input.keyboard.createCursorKeys();
+    this.createMenuOptions();
 
-    var menuButton = this.add.button(this.game.world.centerX, this.game.world.centerY,
-        'buttonBlue', this.startGame, this, 1, 0, 2);
-    menuButton.anchor.setTo(0.5, 0.5);
-
-    //  Game over text
-    var gameTitle = this.game.add.bitmapText(this.game.world.centerX, this.game.world.centerY - 200, 'spacefont', 'PADDINGTON!', 50);
+    var gameTitle = this.game.add.bitmapText(this.game.world.centerX, this.game.world.centerY - 200, 'dinofont', 'road rage!', 90);
     gameTitle.anchor.setTo(0.5, 0.5);
 
 
-    var menuPanel = this.add.sprite(this.game.world.centerX, this.game.world.centerY - 50, "menupanel");
-    menuPanel.anchor.setTo(0.5, 0.5);
-    menuPanel.scale.setTo(5, 2);
+    this.arrow = this.add.sprite(this.game.world.centerX - 200, this.game.world.centerY + this.menuSettings[0].offset, "creatures");
+    this.arrow.anchor.setTo(0.5, 0.5);
+    this.arrow.animations.add('blink', [2, 3], 4);
 
-    var infoText = this.game.add.bitmapText(this.game.world.centerX, this.game.world.centerY - 70, 'spacefont', 'Collect stars\navoid death!!', 30);
-    infoText.anchor.setTo(0.5, 0.5);
+    var self = this;
+    self.arrow.animations.play('blink', null, false);
+    this.game.time.events.loop(Phaser.Timer.SECOND * 3, function () {
+        self.arrow.animations.play('blink', null, false);
+    }, this);
 
+    this.enterButton = this.game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
+    this.game.input.onTap.addOnce(this.invokeOption, this);
+    this.enterButton.onDown.addOnce(this.invokeOption, this);
+};
 
-    //var infoText = this.game.add.text(0, 0, "Mission: Collect stars, avoid death!", { font: "30px Tahoma", fill: "#ff", wordWrap: true, wordWrapWidth: 300, align: "center" });
-    //infoText.anchor.set(0.5);
-    //infoText.x = this.game.world.centerX;
-    //infoText.y = this.game.world.centerY - 80;
+MainMenu.prototype.invokeOption = function () {
+    var menuOption = this.getCurrentMenuOption();
+    this.game.state.start(menuOption.invocationState);
+};
 
+MainMenu.prototype.update = function () {
+    if (this.game.time.now > this.menuMoveTimer) {
 
-    //var buttonText = this.game.add.text(0, 0, "Lets go!", { font: "28px Tahoma", fill: "#ff", wordWrap: true, wordWrapWidth: menuPanel.width, align: "center" });
-    //buttonText.anchor.set(0.5);
-    //buttonText.x = this.game.world.centerX;
-    //buttonText.y = this.game.world.centerY + 2;
+        if (this.cursors.up.isDown) {
+            this.moveArrow(-1);
+        }
 
-    var buttonText = this.game.add.bitmapText(this.game.world.centerX, this.game.world.centerY, 'spacefont', 'Start', 25);
-    buttonText.anchor.setTo(0.5, 0.5);
+        if (this.cursors.down.isDown) {
+            this.moveArrow(1);
+        }
 
-
-    this.music = this.game.add.audio('intromusic');
-    this.music.loopFull(1);
-    this.music.play();
+        this.menuMoveTimer = this.game.time.now + ARROW_TWEEN_DELAY;
+    }
 };
 
 MainMenu.prototype.startGame = function () {
-    this.music.stop();
     this.game.state.start("Game");
 };
 

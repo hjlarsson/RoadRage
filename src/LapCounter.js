@@ -12,7 +12,6 @@ function LapCounter(game, player, x, y, size, checkpointLocations) {
     Phaser.BitmapText.call(this, this.game, x, y, 'spacefont', "", size);
     this.fixedToCamera = true;
 
-
     this.checkpointLocations = checkpointLocations;
 
     this.checkpointLocations.sort(function (a, b) {
@@ -20,7 +19,7 @@ function LapCounter(game, player, x, y, size, checkpointLocations) {
     });
 
     // DEBUG
-    this.checkpointLocations = [this.checkpointLocations[0]];
+    this.checkpointLocations = [this.checkpointLocations[1]];
 
     // The next checkpoint to take is index 1
     this.checkpointIndex = 0;
@@ -31,11 +30,6 @@ function LapCounter(game, player, x, y, size, checkpointLocations) {
     this.checkpoints.enableBody = true;
     this.checkpoints.enableBodyDebug = true;
     this.checkpoints.physicsBodyType = Phaser.Physics.ARCADE;
-    //this.checkpoints.createMultiple(1, 'checkpoint');
-    //this.checkpoints.setAll('anchor.x', 0.5);
-    //this.checkpoints.setAll('anchor.y', 0.5);
-    //this.checkpoints.setAll('scale.x', 4);
-    //this.checkpoints.setAll('scale.y', 4);
 
     for (i = 0; i < 1; i++) {
         var rect = this.game.add.sprite(0, 0, null);
@@ -117,7 +111,7 @@ LapCounter.prototype.victory = function () {
     fadeInGameOver.to({alpha: 1}, 1000, Phaser.Easing.Quintic.Out);
     fadeInGameOver.onComplete.add(setResetHandlers);
     fadeInGameOver.start();
-    //this.submitScore(this.gameTime);
+    this.submitScore(this.gameTime);
 
     var self = this;
     function setResetHandlers() {
@@ -153,7 +147,6 @@ LapCounter.prototype.submitScore = function (score) {
             } else {
                 console.log("Sent high score ", score, response);
             }
-
         });
 };
 
