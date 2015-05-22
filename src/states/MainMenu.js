@@ -63,6 +63,11 @@ MainMenu.prototype.moveArrow = function (value) {
 
 MainMenu.prototype.create = function () {
 
+    this.music = this.game.add.audio('introMusic');
+    this.music.loopFull(1);
+    this.music.play();
+    console.log("Playing audio");
+
     this.cursors = this.game.input.keyboard.createCursorKeys();
     this.createMenuOptions();
 
@@ -83,10 +88,13 @@ MainMenu.prototype.create = function () {
     this.enterButton = this.game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
     this.game.input.onTap.addOnce(this.invokeOption, this);
     this.enterButton.onDown.addOnce(this.invokeOption, this);
+
+
 };
 
 MainMenu.prototype.invokeOption = function () {
     var menuOption = this.getCurrentMenuOption();
+    this.music.stop();
     this.game.state.start(menuOption.invocationState);
 };
 
@@ -103,10 +111,6 @@ MainMenu.prototype.update = function () {
 
         this.menuMoveTimer = this.game.time.now + ARROW_TWEEN_DELAY;
     }
-};
-
-MainMenu.prototype.startGame = function () {
-    this.game.state.start("Game");
 };
 
 module.exports = MainMenu;

@@ -55,8 +55,15 @@ Game.prototype.create = function () {
     this.gameOver.visible = false;
     this.gameOver.fixedToCamera = true;
 
+    this.bgAmbientMusic = this.game.add.audio('mainAmbientMusic');
+    this.bgAmbientMusic.loopFull(1);
+    this.bgAmbientMusic.volume = 0.3;
+    this.bgAmbientMusic.play();
 
-
+    this.bgMusic = this.game.add.audio('mainMusic');
+    this.bgMusic.loopFull(1);
+    this.bgMusic.volume = 0.6;
+    this.bgMusic.play();
 };
 
 Game.prototype.update = function () {

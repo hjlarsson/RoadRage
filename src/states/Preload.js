@@ -32,6 +32,14 @@ Preload.prototype.preload = function () {
     this.game.load.bitmapFont('dinofont', 'assets/fonts/dinofont.png', 'assets/fonts/dinofont.fnt');
     this.game.load.spritesheet('creatures', 'assets/spritesheet/creature_sprites_1.png', 64, 64, 8);
     this.game.load.spritesheet('terrex', 'assets/spritesheet/terrex_0.png', 94, 77, 27);
+
+    // Sounds
+    this.game.load.audio('introMusic', ['assets/sounds/264295_foolboymedia_sky-loop.ogg']);
+    this.game.load.audio('mainMusic', ['assets/sounds/231254_foolboymedia_action-theme.ogg']);
+    this.game.load.audio('mainAmbientMusic', ['assets/sounds/34526_erdie_nuerburgring-pit-lane.ogg']);
+    this.game.load.audio('victorySound', ['assets/sounds/110505_iut-paris8_labbefabrice-2011-01.ogg']);
+
+
 };
 
 Preload.prototype.create = function () {
