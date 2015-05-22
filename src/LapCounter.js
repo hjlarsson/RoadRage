@@ -1,3 +1,4 @@
+var superagent = require('superagent');
 
 function LapCounter(game, player, x, y, size, checkpointLocations) {
     this.game = game;
@@ -50,7 +51,7 @@ function LapCounter(game, player, x, y, size, checkpointLocations) {
 
 
     //  Victory
-    this.victoryText = this.game.add.bitmapText(this.game.width / 2, this.game.height / 2, 'spacefont', 'Soon (TM)', 50);
+    this.victoryText = this.game.add.bitmapText(this.game.width / 2, this.game.height / 2, 'spacefont', 'Soon (TM)', 70);
     this.victoryText.x = this.victoryText.x - this.victoryText.textWidth / 2;
     this.victoryText.y = this.victoryText.y - this.victoryText.textHeight / 3;
     //this.victoryText.visible = false;
@@ -88,11 +89,10 @@ LapCounter.prototype.collide = function (player, checkpoint) {
 };
 
 LapCounter.prototype.getElapsedTime = function () {
-    return ((new Date().getTime() / 1000) - this.startTime).toFixed(3);
+    return ((new Date().getTime() / 1000) - this.startTime).toFixed(2);
 };
 
 LapCounter.prototype.render = function () {
-
     this.checkpoints.forEach(function (child) {
         this.game.debug.body(child);
     }, this, true);
@@ -109,13 +109,15 @@ LapCounter.prototype.update = function () {
 LapCounter.prototype.victory = function () {
     this.player.kill();
 
-    var elapsed = this.getElapsedTime();
-    this.victoryText.text = "Victory!\nTime: " + elapsed;
+    // We do this to keep the scores in sync
+    this.render();
+    this.victoryText.text = " Victory!\nTime: " + this.gameTime;
 
     var fadeInGameOver = this.game.add.tween(this.victoryText);
     fadeInGameOver.to({alpha: 1}, 1000, Phaser.Easing.Quintic.Out);
     fadeInGameOver.onComplete.add(setResetHandlers);
     fadeInGameOver.start();
+    //this.submitScore(this.gameTime);
 
     var self = this;
     function setResetHandlers() {
@@ -124,6 +126,7 @@ LapCounter.prototype.victory = function () {
         var spaceRestart = self.fireButton.onDown.addOnce(_restart, this);
 
         function _restart() {
+
             tapRestart.detach();
             spaceRestart.detach();
             console.log("Restarting game");
@@ -133,8 +136,25 @@ LapCounter.prototype.victory = function () {
     }
 };
 
-LapCounter.prototype.submitScore = function () {
+LapCounter.prototype.submitScore = function (score) {
+    var data = {
+        username: "Tarkan",
+        dinokey: "c9525b50-00b0-11e5-a5b9-57d35350c5fb",
+        score: score
+    };
 
+    superagent
+        .post("http://upr-jstenninge1:3000/api/score/")
+        .send(data)
+        .timeout(2000)
+        .end(function (err, response) {
+            if (err) {
+                console.error("Unable to send score due to ", err, response);
+            } else {
+                console.log("Sent high score ", score, response);
+            }
+
+        });
 };
 
 module.exports = LapCounter;
