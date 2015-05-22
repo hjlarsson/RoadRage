@@ -11,6 +11,8 @@ A game made during Uprise Game Jam 2015
 
 - http://www.freesound.org/people/FoolBoyMedia/sounds/231254/
 - http://www.freesound.org/people/FoolBoyMedia/sounds/264295/
+- http://www.freesound.org/people/iut_Paris8/sounds/110505/
+- http://www.freesound.org/people/Erdie/sounds/34526/
 
 # Credits and greetings
 - http://www.kenney.nl/
