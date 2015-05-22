@@ -47,7 +47,6 @@ Game.prototype.create = function () {
     this.backgroundlayer.resizeWorld();
     //this.backgroundlayer.debug = true;
 
-
     //  Game over text
     this.gameOver = this.game.add.bitmapText(this.game.width / 2, this.game.height / 2, 'spacefont', 'GAME OVER!', 110);
     this.gameOver.x = this.gameOver.x - this.gameOver.textWidth / 2;
@@ -67,6 +66,8 @@ Game.prototype.create = function () {
 };
 
 Game.prototype.update = function () {
+
+    this.game.physics.arcade.collide(this.player, this.terrex);
     this.game.physics.arcade.collide(this.player, this.blockedLayer);
     //this.game.physics.arcade.overlap(this.player, this.lapCounter.checkpoints, this.lapCounter.collide.bind(this.lapCounter), null, null);
 

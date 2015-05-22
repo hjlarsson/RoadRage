@@ -5,7 +5,7 @@ function LapCounter(game, player, x, y, size, checkpointLocations) {
     this.player = player;
 
     this.laps = 0;
-    this.lapsGoal = 1;
+    this.lapsGoal = 2;
     this.startTime = new Date().getTime() / 1000;
     this.gameTime = this.getElapsedTime();
 
@@ -19,7 +19,7 @@ function LapCounter(game, player, x, y, size, checkpointLocations) {
     });
 
     // DEBUG
-    this.checkpointLocations = [this.checkpointLocations[1]];
+    //this.checkpointLocations = [this.checkpointLocations[1]];
 
     // The next checkpoint to take is index 1
     this.checkpointIndex = 0;
@@ -42,8 +42,6 @@ function LapCounter(game, player, x, y, size, checkpointLocations) {
     this.checkpoints.callAll('kill');
     this.spawnCheckpoint();
 
-
-
     //  Victory
     this.victoryText = this.game.add.bitmapText(this.game.width / 2, this.game.height / 2, 'spacefont', 'Soon (TM)', 70);
     this.victoryText.x = this.victoryText.x - this.victoryText.textWidth / 2;
@@ -54,6 +52,8 @@ function LapCounter(game, player, x, y, size, checkpointLocations) {
     this.victoryText.fixedToCamera = true;
     this.fireButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
+    this.victorySound = this.game.add.audio('victorySound');
+    this.victorySound.volume = 0.6;
 }
 
 LapCounter.prototype = Object.create(Phaser.BitmapText.prototype);
@@ -87,9 +87,11 @@ LapCounter.prototype.getElapsedTime = function () {
 };
 
 LapCounter.prototype.render = function () {
+    /*
     this.checkpoints.forEach(function (child) {
         this.game.debug.body(child);
     }, this, true);
+    */
 
     this.text = "Laps: " + this.laps + " / " + this.lapsGoal + "\nTime: " + this.gameTime;
 };
@@ -106,6 +108,7 @@ LapCounter.prototype.victory = function () {
     // We do this to keep the scores in sync
     this.render();
     this.victoryText.text = " Victory!\nTime: " + this.gameTime;
+    this.victorySound.play();
 
     var fadeInGameOver = this.game.add.tween(this.victoryText);
     fadeInGameOver.to({alpha: 1}, 1000, Phaser.Easing.Quintic.Out);
@@ -124,7 +127,7 @@ LapCounter.prototype.victory = function () {
             tapRestart.detach();
             spaceRestart.detach();
             console.log("Restarting game");
-            //self.bgMusic.stop();
+            self.game.sound.stopAll();
             self.game.state.start("Game");
         }
     }
