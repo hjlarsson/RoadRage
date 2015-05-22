@@ -5,7 +5,7 @@ var BASE_TEXTURE_ROTATION = 90 * (Math.PI / 180);
 
 function Player(game, x, y) {
     this.game = game;
-    Phaser.Sprite.call(this, this.game, x, y, 'tanks', 'tankGreen.png');
+    Phaser.Sprite.call(this, this.game, x, y, 'tanks', 'tankRed.png');
 
     this.anchor.setTo(0.5, 0.5);
     this.scale.x = 0.2;
