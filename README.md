@@ -1,6 +1,8 @@
 # Road Rage
 A game made during Uprise Game Jam 2015
 
+Test it here: http://bit.ly/1Q23hGb
+
 # Utils
 
 - http://kvazars.com/littera/
