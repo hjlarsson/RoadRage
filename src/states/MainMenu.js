@@ -66,7 +66,6 @@ MainMenu.prototype.create = function () {
     this.music = this.game.add.audio('introMusic');
     this.music.loopFull(1);
     this.music.play();
-    console.log("Playing audio");
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
     this.createMenuOptions();

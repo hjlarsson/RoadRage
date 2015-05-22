@@ -1,7 +1,6 @@
 # Road Rage
 A game made during Uprise Game Jam 2015
 
-
 # Utils
 
 - http://kvazars.com/littera/
@@ -22,3 +21,7 @@ A game made during Uprise Game Jam 2015
 - http://invrse.co/create-menu-screen-in-phaser/
 - http://www.fontspace.com/shrine-of-isis/lost-world
 - http://www.gamedevacademy.org/html5-phaser-tutorial-top-down-games-with-tiled/
+
+# Todo
+- Experiment with enemies: https://phaser.io/tutorials/coding-tips-008
+- Experiment with enemies: https://phaser.io/tutorials/coding-tips-008
