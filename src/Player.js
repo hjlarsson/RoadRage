@@ -5,15 +5,18 @@ var BASE_TEXTURE_ROTATION = 90 * (Math.PI / 180);
 
 function Player(game, x, y) {
     this.game = game;
-    Phaser.Sprite.call(this, this.game, x, y, 'player');
+    Phaser.Sprite.call(this, this.game, x, y, 'tanks', 'tankGreen.png');
 
     this.anchor.setTo(0.5, 0.5);
     this.scale.x = 0.2;
     this.scale.y = 0.2;
+
     this.game.physics.arcade.enable(this);
     this.body.maxVelocity.setTo(MAXSPEED, MAXSPEED);
     this.body.drag.setTo(DRAG, DRAG);
     this.body.collideWorldBounds = true;
+    this.body.width += 15;
+    this.body.height += 15;
 
     this.cursors = this.game.input.keyboard.createCursorKeys();
 
@@ -22,6 +25,10 @@ function Player(game, x, y) {
 
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.constructor = Player;
+
+Player.prototype.render = function () {
+    //this.game.debug.body(this);
+};
 
 
 Player.prototype.create = function () {

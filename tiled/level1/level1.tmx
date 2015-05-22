@@ -18,7 +18,7 @@
    eJxTYmBgUKIA4wP45JWQaFLMJKSXkBkwOUMgNkbDTkTq1QRiVTRsiccdyGwXIDZBwzoE3E3Iv/gAKeGJTZxcDACKbgxc
   </data>
  </layer>
- <layer name="dinoBlockedLayer" width="15" height="10" opacity="0">
+ <layer name="dinoBlockedLayer" width="15" height="10" visible="0" opacity="0">
   <data encoding="base64" compression="zlib">
    eJxjYMAPpPBgQoAYNcNNL7lhNdwAAO2OAdU=
   </data>
@@ -29,13 +29,15 @@
     <property name="type" value="playerStart"/>
    </properties>
   </object>
-  <object id="3" gid="26" x="252" y="597" width="36" height="43">
+  <object id="3" gid="26" x="673" y="518" width="36" height="43">
    <properties>
+    <property name="index" value="3"/>
     <property name="type" value="checkpoint"/>
    </properties>
   </object>
   <object id="4" gid="26" x="294" y="151" width="45" height="43.5">
    <properties>
+    <property name="index" value="2"/>
     <property name="type" value="checkpoint"/>
    </properties>
   </object>
@@ -46,6 +48,7 @@
   </object>
   <object id="7" gid="26" x="843.5" y="408.25" width="45" height="43.5">
    <properties>
+    <property name="index" value="1"/>
     <property name="type" value="checkpoint"/>
    </properties>
   </object>

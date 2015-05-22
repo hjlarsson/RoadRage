@@ -28,7 +28,7 @@
          "name":"dinoBlockedLayer",
          "opacity":0,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":15,
          "x":0,
          "y":0
@@ -61,14 +61,15 @@
                  "name":"",
                  "properties":
                     {
+                     "index":"3",
                      "type":"checkpoint"
                     },
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":36,
-                 "x":252,
-                 "y":597
+                 "x":673,
+                 "y":518
                 }, 
                 {
                  "gid":26,
@@ -77,6 +78,7 @@
                  "name":"",
                  "properties":
                     {
+                     "index":"2",
                      "type":"checkpoint"
                     },
                  "rotation":0,
@@ -109,6 +111,7 @@
                  "name":"",
                  "properties":
                     {
+                     "index":"1",
                      "type":"checkpoint"
                     },
                  "rotation":0,

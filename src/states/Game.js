@@ -8,6 +8,8 @@ var Game = function (game) {
 
     this.player = null;
     this.lapCounter = null;
+    this.gameOver = null;
+
 };
 
 Game.prototype.preload = function () {
@@ -38,33 +40,39 @@ Game.prototype.create = function () {
     this.game.world.add(this.terrex);
 
     var checkpointLocations = this.findObjectsByType('checkpoint', this.map, 'objectsLayer');
-    this.lapCounter = new LapCounter(this.game, this.game.width - 200, 10, 20, checkpointLocations);
+    this.lapCounter = new LapCounter(this.game, this.player, this.game.width - 350, 10, 25, checkpointLocations);
     this.game.world.add(this.lapCounter);
 
     //resizes the game world to match the layer dimensions
     this.backgroundlayer.resizeWorld();
     //this.backgroundlayer.debug = true;
 
-    //var mummy = this.game.add.sprite(300, 200, 'creatures');
-    //mummy.animations.add('walk', [2,3]);
-    //mummy.animations.play('walk', 2, false);
 
-    //var mummy = this.game.add.sprite(300, 200, 'terrex');
-    //mummy.scale.x = -0.5;
-    //mummy.scale.y = 0.5;
-    //mummy.anchor.setTo(0.5, 0.5);
-    //mummy.animations.add('idle', [0,1], 4);
-    //mummy.animations.add('attack', [9, 10, 11, 12, 13, 14, 15, 16], 12);
-    //mummy.animations.add('roar', [18, 19, 20, 21, 22, 23, 24, 25, 26]);
-    //mummy.animations.play('idle', null, true);
+    //  Game over text
+    this.gameOver = this.game.add.bitmapText(this.game.width / 2, this.game.height / 2, 'spacefont', 'GAME OVER!', 110);
+    this.gameOver.x = this.gameOver.x - this.gameOver.textWidth / 2;
+    this.gameOver.y = this.gameOver.y - this.gameOver.textHeight / 3;
+    this.gameOver.visible = false;
+    this.gameOver.fixedToCamera = true;
+
+
+
 };
 
 Game.prototype.update = function () {
     this.game.physics.arcade.collide(this.player, this.blockedLayer);
-    this.game.physics.arcade.overlap(this.player, this.lapCounter, this.lapCounter.collide, null, null);
+    //this.game.physics.arcade.overlap(this.player, this.lapCounter.checkpoints, this.lapCounter.collide.bind(this.lapCounter), null, null);
+
+    var onOverlap = this.lapCounter.collide.bind(this.lapCounter);
+    this.game.physics.arcade.overlap(this.player, this.lapCounter.checkpoints, onOverlap, null, null);
+    //this.game.physics.arcade.overlap(this.player, this.checkpoints, function (a,b) {
+    //    console.log("Collided", a, b);
+    //}, null, null);
 
 
     this.player.update();
+    this.terrex.update();
+    //this.lapCounter.update();
 
 };
 
@@ -81,6 +89,11 @@ Game.prototype.findObjectsByType = function (type, map, layer) {
         }
     });
     return result;
+};
+
+Game.prototype.render = function () {
+  this.lapCounter.render();
+    this.player.render();
 };
 
 module.exports = Game;

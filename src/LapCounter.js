@@ -1,36 +1,63 @@
-function LapCounter(game, x, y, size, checkpointLocations) {
+
+function LapCounter(game, player, x, y, size, checkpointLocations) {
     this.game = game;
-    Phaser.BitmapText.call(this, this.game, x, y, 'spacefont', "Lap: 0/2", size);
-    this.fixedToCamera = true;
-
-    console.log("Locations are", checkpointLocations);
-    this.checkpointLocations = checkpointLocations;
-
-    // The next checkpoint to take is index 1
-    this.checkpointIndex = 1;
-
-    //var shields = this.game.add.bitmapText(this.game.width - 200, 10, 'spacefont', 'Lap: 0/2', 20);
-    ////shields.render = function () {
-    ////    shields.text = 'Stars: ' + Math.max(player.score, 0);
-    ////};
-    ////shields.render();
-    //console.log("What am im", shields);
-    //shields.fixedToCamera = true;
-
+    this.player = player;
 
     this.laps = 0;
+    this.lapsGoal = 1;
+    this.startTime = new Date().getTime() / 1000;
+    this.gameTime = this.getElapsedTime();
+
+    Phaser.BitmapText.call(this, this.game, x, y, 'spacefont', "", size);
+    this.fixedToCamera = true;
+
+
+    this.checkpointLocations = checkpointLocations;
+
+    this.checkpointLocations.sort(function (a, b) {
+        return a.properties.index > b.properties.index;
+    });
+
+    // DEBUG
+    this.checkpointLocations = [this.checkpointLocations[0]];
+
+    // The next checkpoint to take is index 1
+    this.checkpointIndex = 0;
+
 
     //  Our star group
     this.checkpoints = this.game.add.group();
     this.checkpoints.enableBody = true;
     this.checkpoints.enableBodyDebug = true;
     this.checkpoints.physicsBodyType = Phaser.Physics.ARCADE;
-    this.checkpoints.createMultiple(1, 'checkpoint');
-    this.checkpoints.setAll('anchor.x', 0.5);
-    this.checkpoints.setAll('anchor.y', 0.5);
-    this.checkpoints.callAll('kill');
+    //this.checkpoints.createMultiple(1, 'checkpoint');
+    //this.checkpoints.setAll('anchor.x', 0.5);
+    //this.checkpoints.setAll('anchor.y', 0.5);
+    //this.checkpoints.setAll('scale.x', 4);
+    //this.checkpoints.setAll('scale.y', 4);
 
+    for (i = 0; i < 1; i++) {
+        var rect = this.game.add.sprite(0, 0, null);
+        this.game.physics.enable(rect, Phaser.Physics.ARCADE);
+        rect.body.setSize(128, 128, 0, 0);
+        rect.anchor.setTo(0.5, 0.5);
+        this.checkpoints.add(rect)
+    }
+
+    this.checkpoints.callAll('kill');
     this.spawnCheckpoint();
+
+
+
+    //  Victory
+    this.victoryText = this.game.add.bitmapText(this.game.width / 2, this.game.height / 2, 'spacefont', 'Soon (TM)', 50);
+    this.victoryText.x = this.victoryText.x - this.victoryText.textWidth / 2;
+    this.victoryText.y = this.victoryText.y - this.victoryText.textHeight / 3;
+    //this.victoryText.visible = false;
+    this.victoryText.alpha = 0;
+
+    this.victoryText.fixedToCamera = true;
+    this.fireButton = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 }
 
@@ -43,12 +70,7 @@ LapCounter.prototype.spawnCheckpoint = function () {
     checkpoint.reset(location.x, location.y);
 };
 
-LapCounter.prototype.render = function () {
-    this.text = "Lap: " + this.laps + " /2";
-};
-
 LapCounter.prototype.collide = function (player, checkpoint) {
-    console.log("Collided with checkpoint");
     checkpoint.kill();
 
     // Increment the index where to spawn the next checkpoint at
@@ -59,6 +81,59 @@ LapCounter.prototype.collide = function (player, checkpoint) {
     }
 
     this.spawnCheckpoint();
+
+    if (this.laps == this.lapsGoal) {
+        this.victory();
+    }
+};
+
+LapCounter.prototype.getElapsedTime = function () {
+    return ((new Date().getTime() / 1000) - this.startTime).toFixed(3);
+};
+
+LapCounter.prototype.render = function () {
+
+    this.checkpoints.forEach(function (child) {
+        this.game.debug.body(child);
+    }, this, true);
+
+    this.text = "Laps: " + this.laps + " / " + this.lapsGoal + "\nTime: " + this.gameTime;
+};
+
+LapCounter.prototype.update = function () {
+    if (this.player.alive) {
+        this.gameTime = this.getElapsedTime();
+    }
+};
+
+LapCounter.prototype.victory = function () {
+    this.player.kill();
+
+    var elapsed = this.getElapsedTime();
+    this.victoryText.text = "Victory!\nTime: " + elapsed;
+
+    var fadeInGameOver = this.game.add.tween(this.victoryText);
+    fadeInGameOver.to({alpha: 1}, 1000, Phaser.Easing.Quintic.Out);
+    fadeInGameOver.onComplete.add(setResetHandlers);
+    fadeInGameOver.start();
+
+    var self = this;
+    function setResetHandlers() {
+        //  The "click to restart" handler
+        var tapRestart = self.game.input.onTap.addOnce(_restart, this);
+        var spaceRestart = self.fireButton.onDown.addOnce(_restart, this);
+
+        function _restart() {
+            tapRestart.detach();
+            spaceRestart.detach();
+            console.log("Restarting game");
+            //self.bgMusic.stop();
+            self.game.state.start("Game");
+        }
+    }
+};
+
+LapCounter.prototype.submitScore = function () {
 
 };
 
